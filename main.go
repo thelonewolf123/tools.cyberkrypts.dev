@@ -8,6 +8,18 @@ import (
 	"github.com/kkdai/youtube/v2"
 )
 
+type Format struct {
+	QualityLabel string
+	URL          string
+	MimeType     string
+}
+
+type VideoResponse struct {
+	Title   string
+	Author  string
+	Formats []Format
+}
+
 // https://www.youtube.com/watch?v=HAo_YVzRelk
 func main() {
 	if len(os.Args) != 2 {
@@ -24,12 +36,21 @@ func main() {
 		log.Fatalf("Error getting video: %v", err)
 	}
 
-	streamUrl, err := youtube.GetStreamURL(video, &video.Formats[0])
+	formats := []Format{}
 
-	if err != nil {
-		log.Fatalf("Error getting stream: %v", err)
+	for _, format := range video.Formats {
+		fmt.Printf("Format: %s\n", format.QualityLabel)
+		fmt.Printf("URL: %s\n", format.URL)
+		fmt.Printf("Mime Type: %s\n", format.MimeType)
+
+		formats = append(formats, Format{QualityLabel: format.QualityLabel, URL: format.URL, MimeType: format.MimeType})
 	}
 
-	fmt.Printf("Video Title: %s\n", video.Title)
-	fmt.Printf("Video Author: %s\n", streamUrl)
+	videoResponse := VideoResponse{
+		Title:   video.Title,
+		Formats: formats,
+		Author:  video.Author,
+	}
+
+	fmt.Printf("Video Title: %s\n", videoResponse)
 }
