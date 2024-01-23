@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-
+	"github.com/gin-gonic/gin"
 	"github.com/kkdai/youtube/v2"
 )
 
@@ -20,37 +17,56 @@ type VideoResponse struct {
 	Formats []Format
 }
 
-// https://www.youtube.com/watch?v=HAo_YVzRelk
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: go run main.go <YouTube Video URL>")
-		return
-	}
-
-	videoURL := os.Args[1]
-
+func getVideoInfo(videoURL string) (VideoResponse, error) {
 	youtube := youtube.Client{}
 	video, err := youtube.GetVideo(videoURL)
 
 	if err != nil {
-		log.Fatalf("Error getting video: %v", err)
+		return VideoResponse{}, err
 	}
 
 	formats := []Format{}
 
 	for _, format := range video.Formats {
-		fmt.Printf("Format: %s\n", format.QualityLabel)
-		fmt.Printf("URL: %s\n", format.URL)
-		fmt.Printf("Mime Type: %s\n", format.MimeType)
-
 		formats = append(formats, Format{QualityLabel: format.QualityLabel, URL: format.URL, MimeType: format.MimeType})
 	}
 
 	videoResponse := VideoResponse{
 		Title:   video.Title,
-		Formats: formats,
 		Author:  video.Author,
+		Formats: formats,
 	}
 
-	fmt.Printf("Video Title: %s\n", videoResponse)
+	return videoResponse, nil
+}
+
+// https://www.youtube.com/watch?v=HAo_YVzRelk
+func main() {
+	router := gin.Default()
+
+	router.LoadHTMLGlob("templates/*")
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(200, "index.html", gin.H{})
+	})
+
+	router.GET("/video", func(c *gin.Context) {
+		videoURL := c.Query("url")
+
+		if videoURL == "" {
+			c.JSON(400, gin.H{"error": "url is required"})
+			return
+		}
+
+		videoResponse, err := getVideoInfo(videoURL)
+
+		if err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, videoResponse)
+	})
+
+	router.Run(":8080")
 }
