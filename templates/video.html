@@ -1,0 +1,17 @@
+<h1>{{.title}}</h1>
+<p>Author: {{.author}}</p>
+
+<h2>Video Formats</h2>
+<ul class="flex">
+    {{range .formats}}
+    <li>
+        <strong>Quality Label:</strong> {{.QualityLabel}}<br />
+        <strong>URL:</strong>
+        <button>
+            <a href="{{.URL}}" target="_blank">Download</a>
+        </button>
+        <br />
+        <strong>MIME Type:</strong> {{.MimeType}}
+    </li>
+    {{end}}
+</ul>

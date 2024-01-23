@@ -65,7 +65,11 @@ func main() {
 			return
 		}
 
-		c.JSON(200, videoResponse)
+		c.HTML(200, "video.html", gin.H{
+			"title":   videoResponse.Title,
+			"author":  videoResponse.Author,
+			"formats": videoResponse.Formats,
+		})
 	})
 
 	router.Run(":8080")
