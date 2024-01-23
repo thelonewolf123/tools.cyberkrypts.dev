@@ -76,13 +76,13 @@ func getVideoInfo(videoURL string) (VideoResponse, error) {
 func main() {
 	router := gin.Default()
 
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("templates/**/*")
 
-	router.GET("/", func(c *gin.Context) {
+	router.GET("/youtube", func(c *gin.Context) {
 		c.HTML(200, "index.html", gin.H{})
 	})
 
-	router.GET("/video", func(c *gin.Context) {
+	router.GET("/youtube/video", func(c *gin.Context) {
 		videoURL := c.Query("url")
 
 		if videoURL == "" {

@@ -9,10 +9,11 @@
             <strong class="text-blue-500 pr-2">Quality Label:</strong>
             {{.QualityLabel}} </span
         ><br />
-        <strong class="text-blue-500 pr-2 uppercase">Format:</strong>
-        {{.FileType}} <br />
+        <strong class="text-blue-500 pr-2">Format:</strong>
+        <span class="uppercase">{{.FileType}}</span><br />
+        <br />
         <a
-            class="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+            class="bg-blue-500 text-white px-4 py-2 rounded-md my-2"
             href="{{.URL}}"
             target="_blank"
             download="{{.FileName}}"
