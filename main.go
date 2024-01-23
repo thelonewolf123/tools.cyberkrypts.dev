@@ -73,7 +73,6 @@ func getVideoInfo(videoURL string) (VideoResponse, error) {
 	return videoResponse, nil
 }
 
-// https://www.youtube.com/watch?v=HAo_YVzRelk
 func main() {
 	router := gin.Default()
 
