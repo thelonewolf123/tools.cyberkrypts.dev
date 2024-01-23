@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/kkdai/youtube/v2"
 )
@@ -8,13 +10,38 @@ import (
 type Format struct {
 	QualityLabel string
 	URL          string
-	MimeType     string
+	FileName     string
+	FileType     string
 }
 
 type VideoResponse struct {
 	Title   string
 	Author  string
 	Formats []Format
+}
+
+func getFileName(title, mimeType string) (string, string) {
+	mimeType = strings.Split(mimeType, ";")[0]
+	switch mimeType {
+	case "video/mp4":
+		return title + ".mp4", "mp4"
+	case "video/webm":
+		return title + ".webm", "webm"
+	case "video/3gpp":
+		return title + ".3gp", "3gp"
+	case "video/x-flv":
+		return title + ".flv", "flv"
+	case "video/quicktime":
+		return title + ".mov", "mov"
+	case "audio/mp4":
+		return title + ".m4a", "m4a"
+	case "audio/webm":
+		return title + ".webm", "webm"
+	case "audio/3gpp":
+		return title + ".3gp", "3gp"
+	}
+
+	return title + ".mp4", "mp4"
 }
 
 func getVideoInfo(videoURL string) (VideoResponse, error) {
@@ -28,7 +55,12 @@ func getVideoInfo(videoURL string) (VideoResponse, error) {
 	formats := []Format{}
 
 	for _, format := range video.Formats {
-		formats = append(formats, Format{QualityLabel: format.QualityLabel, URL: format.URL, MimeType: format.MimeType})
+		fileName, fileType := getFileName(video.Title, format.MimeType)
+		qualityLabel := format.QualityLabel
+		if qualityLabel == "" {
+			qualityLabel = "Audio"
+		}
+		formats = append(formats, Format{QualityLabel: qualityLabel, URL: format.URL, FileName: fileName, FileType: fileType})
 	}
 
 	videoResponse := VideoResponse{

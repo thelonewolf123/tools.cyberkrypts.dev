@@ -1,17 +1,21 @@
-<h1>{{.title}}</h1>
-<p>Author: {{.author}}</p>
+<h1 class="text-3xl font-bold mb-4">{{.title}}</h1>
+<p class="text-gray-600">Author: {{.author}}</p>
 
-<h2>Video Formats</h2>
-<ul class="flex">
+<h2 class="text-2xl font-bold mt-4 mb-2">Video Formats</h2>
+<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {{range .formats}}
-    <li>
-        <strong>Quality Label:</strong> {{.QualityLabel}}<br />
-        <strong>URL:</strong>
-        <button>
-            <a href="{{.URL}}" target="_blank">Download</a>
+    <li class="bg-white p-4 rounded-lg shadow-md">
+        <span>
+            <strong class="text-blue-500 pr-2">Quality Label:</strong>
+            {{.QualityLabel}} </span
+        ><br />
+        <strong class="text-blue-500 pr-2 uppercase">Format:</strong>
+        {{.FileType}} <br />
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-2">
+            <a href="{{.URL}}" target="_blank" download="{{.FileName}}"
+                >Download</a
+            >
         </button>
-        <br />
-        <strong>MIME Type:</strong> {{.MimeType}}
     </li>
     {{end}}
 </ul>
