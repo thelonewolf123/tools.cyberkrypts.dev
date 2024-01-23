@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -103,6 +104,11 @@ func main() {
 			"formats": videoResponse.Formats,
 		})
 	})
+
+	if os.Getenv("PORT") != "" {
+		router.Run(":" + os.Getenv("PORT"))
+		return
+	}
 
 	router.Run(":8080")
 }
