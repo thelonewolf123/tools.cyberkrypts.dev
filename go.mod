@@ -1,4 +1,4 @@
-module youtube-downloader-web
+module tools.cyberkrypts.dev
 
 go 1.21
 

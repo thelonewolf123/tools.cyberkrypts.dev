@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"youtube-downloader-web/controllers"
-	"youtube-downloader-web/db"
+	"tools.cyberkrypts.dev/controllers"
+	"tools.cyberkrypts.dev/db"
 
 	"github.com/gin-gonic/gin"
 )

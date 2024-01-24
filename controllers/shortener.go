@@ -3,8 +3,9 @@ package controllers
 import (
 	"fmt"
 	"math/rand"
-	"youtube-downloader-web/db"
-	"youtube-downloader-web/env"
+
+	"tools.cyberkrypts.dev/db"
+	"tools.cyberkrypts.dev/env"
 
 	"github.com/gin-gonic/gin"
 )
