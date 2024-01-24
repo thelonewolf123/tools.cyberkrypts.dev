@@ -2,9 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"os"
 
 	_ "github.com/lib/pq"
+	"tools.cyberkrypts.dev/env"
 )
 
 var database *sql.DB
@@ -36,12 +36,9 @@ func connect() (*sql.DB, error) {
 		return database, nil
 	}
 
-	DB_URL := os.Getenv("DATABASE_URL")
-	if DB_URL == "" {
-		panic("DATABASE_URL environment variable is not set")
-	}
+	DatabaseURL := env.GetEnv().DatabaseURL
 
-	db, err := sql.Open("postgres", DB_URL)
+	db, err := sql.Open("postgres", DatabaseURL)
 	if err != nil {
 		return nil, err
 	}
