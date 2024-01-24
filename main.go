@@ -16,6 +16,9 @@ func main() {
 
 	router.LoadHTMLGlob("templates/**/**")
 
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(200, "index.html", gin.H{})
+	})
 	router.GET("/youtube", controllers.YoutubeController{}.Index)
 	router.GET("/youtube/video", controllers.YoutubeController{}.GetVideoInfo)
 

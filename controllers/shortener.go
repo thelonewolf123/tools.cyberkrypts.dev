@@ -27,6 +27,21 @@ func (sc ShortenerController) Index(ctx *gin.Context) {
 
 func (sc ShortenerController) Generate(ctx *gin.Context) {
 	longURL := ctx.PostForm("long_url")
+
+	if longURL == "" {
+		ctx.HTML(200, "shortener.html", gin.H{
+			"error": "Long URL is required",
+		})
+		return
+	}
+
+	if len(longURL) > 2000 { // 2000 is the maximum length of a URL
+		ctx.HTML(200, "shortener.html", gin.H{
+			"error": "Long URL is too long",
+		})
+		return
+	}
+
 	shortUrlCode := generateShortUrlCode()
 	baseUrl := env.GetEnv().ApplicationBaseUrl
 	shortURL := baseUrl + "/r/" + shortUrlCode
