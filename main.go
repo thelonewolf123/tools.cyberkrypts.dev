@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"youtube-downloader-web/controllers"
+	"youtube-downloader-web/db"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,21 +12,16 @@ import (
 func main() {
 	router := gin.Default()
 
+	db.Init()
+
 	router.LoadHTMLGlob("templates/**/**")
 
 	router.GET("/youtube", controllers.YoutubeController{}.Index)
 	router.GET("/youtube/video", controllers.YoutubeController{}.GetVideoInfo)
 
-	router.GET("/shortener", func(ctx *gin.Context) {
-		ctx.HTML(200, "shortener.html", gin.H{})
-	})
-
-	router.POST("/shortener/generate", func(ctx *gin.Context) {
-		longURL := ctx.PostForm("long_url")
-		fmt.Println(longURL)
-
-		ctx.HTML(200, "short-url.html", gin.H{})
-	})
+	router.GET("/shortener", controllers.ShortenerController{}.Index)
+	router.POST("/shortener/generate", controllers.ShortenerController{}.Generate)
+	router.GET("/r/:short_url_code", controllers.ShortenerController{}.Redirect)
 
 	if os.Getenv("PORT") != "" {
 		router.Run(":" + os.Getenv("PORT"))
