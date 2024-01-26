@@ -6,6 +6,9 @@ import (
 
 	"tools.cyberkrypts.dev/db"
 	"tools.cyberkrypts.dev/env"
+	"tools.cyberkrypts.dev/templates/components"
+	"tools.cyberkrypts.dev/templates/pages"
+	"tools.cyberkrypts.dev/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,23 +26,19 @@ func generateShortUrlCode() string {
 }
 
 func (sc ShortenerController) Index(ctx *gin.Context) {
-	ctx.HTML(200, "shortener.html", gin.H{})
+	utils.RenderTemplate(200, ctx, pages.ShortenerIndex())
 }
 
 func (sc ShortenerController) Generate(ctx *gin.Context) {
 	longURL := ctx.PostForm("long_url")
 
 	if longURL == "" {
-		ctx.HTML(200, "shortener.html", gin.H{
-			"error": "Long URL is required",
-		})
+		utils.RenderTemplate(200, ctx, components.ShortenerResult("", "Long URL is required"))
 		return
 	}
 
 	if len(longURL) > 2000 { // 2000 is the maximum length of a URL
-		ctx.HTML(200, "shortener.html", gin.H{
-			"error": "Long URL is too long",
-		})
+		utils.RenderTemplate(200, ctx, components.ShortenerResult("", "Long URL is too long"))
 		return
 	}
 
@@ -62,9 +61,7 @@ func (sc ShortenerController) Generate(ctx *gin.Context) {
 		return
 	}
 
-	ctx.HTML(200, "short-url.html", gin.H{
-		"short_url": shortURL,
-	})
+	utils.RenderTemplate(200, ctx, components.ShortenerResult(shortURL, ""))
 }
 
 func (sc ShortenerController) Redirect(c *gin.Context) {

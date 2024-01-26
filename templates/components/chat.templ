@@ -1,0 +1,17 @@
+package components
+
+templ ChatMessage(msg string, isCurrentUser bool) {
+	if isCurrentUser {
+		<div class="flex items-end mb-2" hx-swap="outerHTML" hx-trigger="click" hx-swap-oob="beforeend:#chat-room">
+			<div class="rounded-lg bg-gray-300 p-2 max-w-xs">
+				{ msg }
+			</div>
+		</div>
+	} else {
+		<div class="flex items-start mb-2" hx-swap-oob="beforeend:#chat-room">
+			<div class="rounded-lg bg-blue-500 text-white p-2 max-w-xs">
+				{ msg }
+			</div>
+		</div>
+	}
+}

@@ -7,6 +7,7 @@ toolchain go1.21.6
 require github.com/wader/goutubedl v0.0.0-20240113171134-01bac34c4c02
 
 require (
+	github.com/a-h/templ v0.2.543 // indirect
 	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/google/pprof v0.0.0-20231101202521-4ca4178f5c7a // indirect
+	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kkdai/youtube/v2 v2.10.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect

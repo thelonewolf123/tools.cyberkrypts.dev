@@ -5,20 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kkdai/youtube/v2"
+	"tools.cyberkrypts.dev/interfaces"
+	"tools.cyberkrypts.dev/templates/components"
+	"tools.cyberkrypts.dev/templates/pages"
+	"tools.cyberkrypts.dev/utils"
 )
-
-type Format struct {
-	QualityLabel string
-	URL          string
-	FileName     string
-	FileType     string
-}
-
-type VideoResponse struct {
-	Title   string
-	Author  string
-	Formats []Format
-}
 
 type YoutubeController struct {
 }
@@ -47,15 +38,15 @@ func getFileName(title, mimeType string) (string, string) {
 	return title + ".mp4", "mp4"
 }
 
-func getVideoInfo(videoURL string) (VideoResponse, error) {
+func getVideoInfo(videoURL string) (interfaces.VideoResponse, error) {
 	client := youtube.Client{}
 	video, err := client.GetVideo(videoURL)
 
 	if err != nil {
-		return VideoResponse{}, err
+		return interfaces.VideoResponse{}, err
 	}
 
-	formats := []Format{}
+	formats := []interfaces.Format{}
 
 	for _, format := range video.Formats {
 		fileName, fileType := getFileName(video.Title, format.MimeType)
@@ -63,10 +54,10 @@ func getVideoInfo(videoURL string) (VideoResponse, error) {
 		if qualityLabel == "" {
 			qualityLabel = "Audio"
 		}
-		formats = append(formats, Format{QualityLabel: qualityLabel, URL: format.URL, FileName: fileName, FileType: fileType})
+		formats = append(formats, interfaces.Format{QualityLabel: qualityLabel, URL: format.URL, FileName: fileName, FileType: fileType})
 	}
 
-	videoResponse := VideoResponse{
+	videoResponse := interfaces.VideoResponse{
 		Title:   video.Title,
 		Author:  video.Author,
 		Formats: formats,
@@ -76,7 +67,7 @@ func getVideoInfo(videoURL string) (VideoResponse, error) {
 }
 
 func (y YoutubeController) Index(c *gin.Context) {
-	c.HTML(200, "youtube.html", gin.H{})
+	utils.RenderTemplate(200, c, pages.YoutubeIndex())
 }
 
 func (y YoutubeController) GetVideoInfo(c *gin.Context) {
@@ -95,9 +86,5 @@ func (y YoutubeController) GetVideoInfo(c *gin.Context) {
 		return
 	}
 
-	c.HTML(200, "video.html", gin.H{
-		"title":   videoResponse.Title,
-		"author":  videoResponse.Author,
-		"formats": videoResponse.Formats,
-	})
+	utils.RenderTemplate(200, c, components.YoutubeDownloaderResult(videoResponse))
 }
