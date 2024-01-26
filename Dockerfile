@@ -12,9 +12,11 @@ ENV DATABASE_URL=${DATABASE_URL}
 
 COPY go.mod go.sum ./
 RUN go mod download
+RUN go install github.com/a-h/templ/cmd/templ@latest
 
 COPY . .
 
+RUN templ generate
 RUN go build -o /app/bin .
 
 CMD [ "/app/bin" ]
