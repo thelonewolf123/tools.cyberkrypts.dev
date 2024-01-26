@@ -51,7 +51,7 @@ func (sc ShortenerController) Generate(ctx *gin.Context) {
 	db, err := db.GetDb()
 
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		utils.RenderTemplate(200, ctx, components.ShortenerResult("", "Please try again later"))
 		return
 	}
 	_, err = db.Exec(`INSERT INTO short_urls (long_url, short_url) VALUES ($1, $2)`, longURL, shortUrlCode)

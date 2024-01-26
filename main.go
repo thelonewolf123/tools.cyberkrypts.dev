@@ -15,8 +15,6 @@ func main() {
 
 	db.Init()
 
-	router.LoadHTMLGlob("templates/**/**")
-
 	router.GET("/", func(ctx *gin.Context) {
 		utils.RenderTemplate(200, ctx, pages.Home())
 	})
