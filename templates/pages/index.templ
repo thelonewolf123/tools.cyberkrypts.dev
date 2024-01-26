@@ -1,28 +1,23 @@
 package pages
 
 import "tools.cyberkrypts.dev/templates/layout"
+import "tools.cyberkrypts.dev/interfaces"
 
-templ Home() {
+templ Home(info []interfaces.LandingPageInfo) {
 	@layout.Header("Tools - CyberKrypts") {
 		<div class="bg-blue-900 text-white py-4 text-center">
 			<h1 class="text-3xl font-bold">tools.cyberkrypts.dev</h1>
 		</div>
-		<div class="flex items-center justify-center mt-4">
-			<a
-				href="/shortener"
-				class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-8 px-12 rounded shadow-lg"
-			>
-				<div class="text-2xl mb-2">Link Shortener</div>
-				<p class="text-sm">Shorten your URLs with ease.</p>
-			</a>
-			<div class="mx-8"></div>
-			<a
-				href="/youtube"
-				class="bg-green-500 hover:bg-green-700 text-white font-bold py-8 px-12 rounded shadow-lg"
-			>
-				<div class="text-2xl mb-2">YouTube Downloader</div>
-				<p class="text-sm">Download YouTube videos effortlessly.</p>
-			</a>
+		<div class="flex items-center justify-center mt-4 flex-wrap gap-2">
+			for _, tool := range info {
+				<a
+					href={ templ.SafeURL(tool.URL) }
+					class={ tool.Background + " " + tool.BackgroundHover + " text-white font-bold py-8 px-12 rounded shadow-lg" }
+				>
+					<div class="text-2xl mb-2">{ tool.Title }</div>
+					<p class="text-sm">{ tool.Description }</p>
+				</a>
+			}
 		</div>
 	}
 }

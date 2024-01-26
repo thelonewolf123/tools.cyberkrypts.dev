@@ -4,8 +4,6 @@ import (
 	"tools.cyberkrypts.dev/controllers"
 	"tools.cyberkrypts.dev/db"
 	"tools.cyberkrypts.dev/env"
-	"tools.cyberkrypts.dev/templates/pages"
-	"tools.cyberkrypts.dev/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,9 +13,7 @@ func main() {
 
 	db.Init()
 
-	router.GET("/", func(ctx *gin.Context) {
-		utils.RenderTemplate(200, ctx, pages.Home())
-	})
+	router.GET("/", controllers.HomeController{}.Index)
 
 	router.GET("/youtube", controllers.YoutubeController{}.Index)
 	router.GET("/youtube/video", controllers.YoutubeController{}.GetVideoInfo)
