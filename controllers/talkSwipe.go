@@ -35,11 +35,13 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 
 	sessions[conn] = true
 	defer conn.Close()
+	go sendActiveUsersCount()
 
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			delete(sessions, conn) // Remove the client if there's an error
+			go sendActiveUsersCount()
 			return
 		}
 
@@ -67,8 +69,25 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 
 			if err != nil {
 				delete(sessions, conn) // Remove the client if there's an error
+				go sendActiveUsersCount()
 				return
 			}
+		}
+	}
+}
+
+func sendActiveUsersCount() {
+	activeUsersHtml := &bytes.Buffer{}
+	components.ActiveUsersCount(len(sessions)).Render(context.Background(), activeUsersHtml)
+	broadcastMessage(activeUsersHtml.Bytes()) // broadcast to all users
+}
+
+func broadcastMessage(message []byte) {
+	for client := range sessions {
+		err := client.WriteMessage(websocket.TextMessage, message)
+		if err != nil {
+			delete(sessions, client) // Remove the client if there's an error
+			client.Close()
 		}
 	}
 }
