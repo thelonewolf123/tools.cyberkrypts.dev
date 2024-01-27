@@ -10,24 +10,21 @@ import (
 type HomeController struct{}
 
 var landingPageInfo = []interfaces.LandingPageInfo{{
-	Title:           "Youtube",
-	Description:     "Download Youtube videos with ease",
-	URL:             "/youtube",
-	Background:      "bg-blue-500",
-	BackgroundHover: "hover:bg-blue-700",
+	Title:       "Youtube",
+	Description: "Download Youtube videos with ease",
+	URL:         "/youtube",
+	Background:  "blue",
 },
 	{
-		Title:           "Shortener",
-		Description:     "Shorten and share URLs with ease",
-		URL:             "/shortener",
-		Background:      "bg-green-500",
-		BackgroundHover: "hover:bg-green-700",
+		Title:       "Shortener",
+		Description: "Shorten and share URLs with ease",
+		URL:         "/shortener",
+		Background:  "green",
 	}, {
-		Title:           "Talk Swipe",
-		Description:     "Swipe right for interesting conversations",
-		URL:             "/talk-swipe",
-		Background:      "bg-purple-500",
-		BackgroundHover: "hover:bg-purple-700",
+		Title:       "Talk Swipe",
+		Description: "Swipe right for interesting conversations",
+		URL:         "/talk-swipe",
+		Background:  "purple",
 	},
 }
 
