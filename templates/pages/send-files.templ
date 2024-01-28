@@ -33,7 +33,11 @@ templ SendFilesIndex() {
 				</div>
 			</section>
 			<div class="w-full flex justify-center mt-5">
-				<div class="flex items-center">
+				<form
+					class="flex items-center"
+					hx-post="/send-files/meta-data"
+					hx-target=".send-files-result"
+				>
 					<input
 						type="file"
 						name="file"
@@ -45,8 +49,9 @@ templ SendFilesIndex() {
 					>
 						Get Link
 					</button>
-				</div>
+				</form>
 			</div>
+			<div class="send-files-result"></div>
 		</div>
 	}
 }

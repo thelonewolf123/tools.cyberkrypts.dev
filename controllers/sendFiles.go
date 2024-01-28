@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"tools.cyberkrypts.dev/templates/components"
 	"tools.cyberkrypts.dev/templates/pages"
 	"tools.cyberkrypts.dev/utils"
 )
@@ -50,7 +51,7 @@ func (c SendFilesController) MetaData(ctx *gin.Context) {
 	// file_size := ctx.PostForm("file_size")
 	// file_id := ctx.PostForm("file_id")
 
-	ctx.JSON(200, gin.H{"message": "ok"})
+	utils.RenderTemplate(200, ctx, components.SendFilesResult("new file.mp4", ""))
 }
 
 func (c SendFilesController) DownloadFile(ctx *gin.Context) {
