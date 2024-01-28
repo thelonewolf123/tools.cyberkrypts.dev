@@ -24,6 +24,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/google/pprof v0.0.0-20231101202521-4ca4178f5c7a // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
+	github.com/inhies/go-bytesize v0.0.0-20220417184213-4913239db9cf // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kkdai/youtube/v2 v2.10.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect

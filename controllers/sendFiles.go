@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/inhies/go-bytesize"
 	"tools.cyberkrypts.dev/db"
 	"tools.cyberkrypts.dev/env"
 	"tools.cyberkrypts.dev/templates/components"
@@ -13,6 +15,14 @@ import (
 )
 
 type SendFilesController struct{}
+
+type SendFilesMetaData struct {
+	FileName     string `json:"file_name"`
+	FileSize     string `json:"file_size"`
+	FileId       string `json:"file_id"`
+	WebRtcOffer  string `json:"web_rtc_offer"`
+	WebRtcAnswer string `json:"web_rtc_answer"`
+}
 
 var fsSessions map[*websocket.Conn]bool = make(map[*websocket.Conn]bool)
 
@@ -89,6 +99,10 @@ func (c SendFilesController) DownloadFile(ctx *gin.Context) {
 		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", "File not found"))
 		return
 	}
+
+	bytesize.Format = "%.2f"
+	file_size_int, _ := strconv.Atoi(file_size)
+	file_size = bytesize.New(float64(file_size_int)).String()
 
 	utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex(file_name, file_size, ""))
 }

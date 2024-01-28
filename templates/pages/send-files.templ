@@ -3,26 +3,8 @@ package pages
 import "tools.cyberkrypts.dev/templates/layout"
 import "tools.cyberkrypts.dev/templates/components"
 
-templ SendFilesScript() {
-	<script>
-		const peer = new SimplePeer({
-			initiator: true,
-			trickle: false,
-		});
-		peer.on("signal", (data) => {
-			console.log(JSON.stringify(data));
-		});
-		peer.on("connect", () => {
-			console.log("connected");
-		});
-		peer.on("data", (data) => {
-			console.log("recieved", data);
-		});
-	</script>
-}
-
 templ SendFilesIndex() {
-	@layout.Header("Send Files", components.SimplePeerCdn(), SendFilesScript()) {
+	@layout.Header("Send Files", components.SimplePeerCdn()) {
 		<div class="container mx-auto p-4">
 			<section class="flex justify-center">
 				<div class="flex flex-col gap-2 items-center">
@@ -40,6 +22,7 @@ templ SendFilesIndex() {
 				/>
 				<form
 					class="flex items-center"
+					id="send-files-form"
 					hx-post="/send-files/meta-data"
 					hx-target=".send-files-result"
 				>
@@ -64,6 +47,23 @@ templ SendFilesIndex() {
 				fileName.value = file.name;
 				fileSize.value = file.size;
 			});
+
+			const form = document.querySelector("form");
+			form.addEventListener("submit", ()=>{
+				const peer = new SimplePeer({
+					initiator: true,
+					trickle: false,
+				});
+				peer.on("signal", (data) => {
+					console.log(JSON.stringify(data));
+				});
+				peer.on("connect", () => {
+					console.log("connected");
+				});
+				peer.on("data", (data) => {
+					console.log("recieved", data);
+				});
+			})
 		</script>
 	}
 }
