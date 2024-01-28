@@ -25,6 +25,9 @@ func main() {
 	router.GET("/talk-swipe", controllers.TalkSwipeController{}.Index)
 	router.GET("/talk-swipe/new-chat", controllers.TalkSwipeController{}.NewChat)
 
+	router.GET("/send-files", controllers.SendFilesController{}.Index)
+	router.GET("/send-files/ws", controllers.SendFilesController{}.SendFilesWs)
+
 	port := env.GetEnv().Port
 	router.Run(":" + port)
 }

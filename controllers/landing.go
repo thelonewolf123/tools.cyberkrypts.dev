@@ -25,6 +25,11 @@ var landingPageInfo = []interfaces.LandingPageInfo{{
 		Description: "Swipe right for interesting conversations",
 		URL:         "/talk-swipe",
 		Background:  "purple",
+	}, {
+		Title:       "Send Files",
+		Description: "Send files to anyone with a link",
+		URL:         "/send-files",
+		Background:  "red",
 	},
 }
 
