@@ -1,6 +1,6 @@
 package layout
 
-templ Header(title string) {
+templ Header(title string, scripts ...templ.Component) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -9,6 +9,9 @@ templ Header(title string) {
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
 			<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 			<script src="https://cdn.tailwindcss.com"></script>
+			for _, script := range scripts {
+				@script
+			}
 			<title>{ title }</title>
 		</head>
 		<body class="font-sans bg-gray-100">

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"tools.cyberkrypts.dev/templates/pages"
@@ -41,4 +43,18 @@ func (c SendFilesController) SendFilesWs(ctx *gin.Context) {
 		}
 	}
 
+}
+
+func (c SendFilesController) MetaData(ctx *gin.Context) {
+	// file_name := ctx.PostForm("file_name")
+	// file_size := ctx.PostForm("file_size")
+	// file_id := ctx.PostForm("file_id")
+
+	ctx.JSON(200, gin.H{"message": "ok"})
+}
+
+func (c SendFilesController) DownloadFile(ctx *gin.Context) {
+	file_id := ctx.Param("file_id")
+	fmt.Println(file_id)
+	utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("new file.mp4", "1.4 MB"))
 }

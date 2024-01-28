@@ -1,2 +1,4 @@
 .DS_Store
 templates/**/*_templ.go
+bin/
+tmp/

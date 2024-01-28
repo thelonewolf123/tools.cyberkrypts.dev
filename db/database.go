@@ -25,6 +25,16 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS send_files (
+			id SERIAL PRIMARY KEY,
+			file_name TEXT NOT NULL,
+			file_size INT NOT NULL,
+			file_id TEXT NOT NULL,
+			web_rtc_session_id TEXT NOT NULL,
+			created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+		);`)
 }
 
 func GetDb() (*sql.DB, error) {

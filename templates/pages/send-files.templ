@@ -1,12 +1,31 @@
 package pages
 
 import "tools.cyberkrypts.dev/templates/layout"
+import "tools.cyberkrypts.dev/templates/components"
+
+templ SendFilesScript() {
+	<script>
+		const peer = new SimplePeer({
+			initiator: true,
+			trickle: false,
+		});
+		peer.on("signal", (data) => {
+			console.log(JSON.stringify(data));
+		});
+		peer.on("connect", () => {
+			console.log("connected");
+		});
+		peer.on("data", (data) => {
+			console.log("recieved", data);
+		});
+	</script>
+}
 
 templ SendFilesIndex() {
-	@layout.Header("Send Files") {
+	@layout.Header("Send Files", components.SimplePeerCdn(), SendFilesScript()) {
 		<div class="container mx-auto p-4">
 			<section class="flex justify-center">
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col gap-2 items-center">
 					<h1 class="text-4xl font-bold mb-4">Send Files</h1>
 					<p class="text-blue-500 text-xl">
 						Send files to anyone with a link

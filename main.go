@@ -27,6 +27,8 @@ func main() {
 
 	router.GET("/send-files", controllers.SendFilesController{}.Index)
 	router.GET("/send-files/ws", controllers.SendFilesController{}.SendFilesWs)
+	router.POST("/send-files/meta-data", controllers.SendFilesController{}.MetaData)
+	router.GET("/f/:file_id", controllers.SendFilesController{}.DownloadFile)
 
 	port := env.GetEnv().Port
 	router.Run(":" + port)
