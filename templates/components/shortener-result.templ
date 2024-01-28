@@ -21,7 +21,7 @@ templ ShortenerResult(url string, err string) {
 					value={ url }
 				/>
 				<button
-					id="shortnerd-copy"
+					id="shortnerd-copy-btn"
 					class="px-8 rounded-r-lg bg-gray-400 text-gray-800 font-bold p-4 uppercase border-gray-500 border-t border-b border-r"
 					onclick="copyToClipboard()"
 				>
@@ -36,7 +36,7 @@ templ ShortenerResult(url string, err string) {
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             document.execCommand("copy");
-            document.getElementById("shortnerd-copy").innerHTML = "Copied!";
+            document.getElementById("shortnerd-copy-btn").innerHTML = "Copied!";
         }
     </script>
 }
