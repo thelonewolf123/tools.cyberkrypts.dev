@@ -1,9 +1,9 @@
 build:
 	@templ generate
-	@go build -o bin/api .
+	@go build -o tmp/main .
 
 live:
-	@air --build.cmd "make build" --build.bin "./bin/api"
+	@air
 
 run:
 	@templ generate

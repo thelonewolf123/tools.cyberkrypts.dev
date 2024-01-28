@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"tools.cyberkrypts.dev/db"
+	"tools.cyberkrypts.dev/env"
 	"tools.cyberkrypts.dev/templates/components"
 	"tools.cyberkrypts.dev/templates/pages"
 	"tools.cyberkrypts.dev/utils"
@@ -47,15 +49,46 @@ func (c SendFilesController) SendFilesWs(ctx *gin.Context) {
 }
 
 func (c SendFilesController) MetaData(ctx *gin.Context) {
-	// file_name := ctx.PostForm("file_name")
-	// file_size := ctx.PostForm("file_size")
-	// file_id := ctx.PostForm("file_id")
+	fileName := ctx.PostForm("file_name")
+	fileSize := ctx.PostForm("file_size")
+	fileId := utils.GetRandomCode(5)
 
-	utils.RenderTemplate(200, ctx, components.SendFilesResult("new file.mp4", ""))
+	database, err := db.GetDb()
+	ApplicationBaseUrl := env.GetEnv().ApplicationBaseUrl
+	fileDownloadUrl := ApplicationBaseUrl + "/f/" + fileId
+
+	if err != nil {
+		utils.RenderTemplate(200, ctx, components.SendFilesResult("", err.Error()))
+		return
+	}
+	_, err = database.Exec(`INSERT INTO send_files (file_id, file_name, file_size) VALUES ($1, $2, $3)`, fileId, fileName, fileSize)
+
+	if err != nil {
+		utils.RenderTemplate(200, ctx, components.SendFilesResult("", err.Error()))
+		return
+	}
+
+	utils.RenderTemplate(200, ctx, components.SendFilesResult(fileDownloadUrl, ""))
 }
 
 func (c SendFilesController) DownloadFile(ctx *gin.Context) {
 	file_id := ctx.Param("file_id")
 	fmt.Println(file_id)
-	utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("new file.mp4", "1.4 MB"))
+	database, err := db.GetDb()
+	if err != nil {
+		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", "Sever error! Please try again later"))
+		return
+	}
+
+	var file_name string
+	var file_size string
+
+	err = database.QueryRow(`SELECT file_name, file_size FROM send_files WHERE file_id = $1`, file_id).Scan(&file_name, &file_size)
+
+	if err != nil {
+		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", "File not found"))
+		return
+	}
+
+	utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex(file_name, file_size, ""))
 }

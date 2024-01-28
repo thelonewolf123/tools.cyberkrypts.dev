@@ -33,16 +33,18 @@ templ SendFilesIndex() {
 				</div>
 			</section>
 			<div class="w-full flex justify-center mt-5">
+				<input
+					type="file"
+					name="file"
+					class="text-sm text-stone-500 file:mr-5 file:py-1 file:px-3 file:border-[1px] file:text-xs file:font-medium file:bg-stone-50 file:text-stone-700 hover:file:cursor-pointer hover:file:bg-blue-50 hover:file:text-blue-700 file:rounded"
+				/>
 				<form
 					class="flex items-center"
 					hx-post="/send-files/meta-data"
 					hx-target=".send-files-result"
 				>
-					<input
-						type="file"
-						name="file"
-						class="text-sm text-stone-500 file:mr-5 file:py-1 file:px-3 file:border-[1px] file:text-xs file:font-medium file:bg-stone-50 file:text-stone-700 hover:file:cursor-pointer hover:file:bg-blue-50 hover:file:text-blue-700 file:rounded"
-					/>
+					<input type="hidden" name="file_name" id="file_name"/>
+					<input type="hidden" name="file_size" id="file_size"/>
 					<button
 						type="submit"
 						class="ml-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
@@ -53,5 +55,15 @@ templ SendFilesIndex() {
 			</div>
 			<div class="send-files-result"></div>
 		</div>
+		<script>
+			const fileInput = document.querySelector("input[type=file]");
+			const fileName = document.querySelector("#file_name");
+			const fileSize = document.querySelector("#file_size");
+			fileInput.addEventListener("change", (e) => {
+				const file = e.target.files[0];
+				fileName.value = file.name;
+				fileSize.value = file.size;
+			});
+		</script>
 	}
 }

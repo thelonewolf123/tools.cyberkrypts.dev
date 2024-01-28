@@ -32,9 +32,12 @@ func Init() {
 			file_name TEXT NOT NULL,
 			file_size INT NOT NULL,
 			file_id TEXT NOT NULL,
-			web_rtc_session_id TEXT NOT NULL,
 			created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);`)
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func GetDb() (*sql.DB, error) {

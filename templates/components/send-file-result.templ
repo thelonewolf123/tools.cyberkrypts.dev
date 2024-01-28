@@ -27,14 +27,14 @@ templ SendFilesResult(url string, err string) {
 				</button>
 			</div>
 		</div>
+		<script>
+			function copyToClipboard() {
+				var copyText = document.getElementById("send-file");
+				copyText.select();
+				copyText.setSelectionRange(0, 99999);
+				document.execCommand("copy");
+				document.getElementById("url-copy-btn").innerHTML = "Copied!";
+			}
+    	</script>
 	}
-	<script>
-        function copyToClipboard() {
-            var copyText = document.getElementById("send-file");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            document.execCommand("copy");
-            document.getElementById("url-copy-btn").innerHTML = "Copied!";
-        }
-    </script>
 }

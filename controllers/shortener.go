@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"math/rand"
 
 	"tools.cyberkrypts.dev/db"
 	"tools.cyberkrypts.dev/env"
@@ -14,16 +13,6 @@ import (
 )
 
 type ShortenerController struct{}
-
-func generateShortUrlCode() string {
-	shortUrlLength := 5
-	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	shortUrl := ""
-	for i := 0; i < shortUrlLength; i++ {
-		shortUrl += string(chars[rand.Intn(len(chars))])
-	}
-	return shortUrl
-}
 
 func (sc ShortenerController) Index(ctx *gin.Context) {
 	utils.RenderTemplate(200, ctx, pages.ShortenerIndex())
@@ -42,7 +31,7 @@ func (sc ShortenerController) Generate(ctx *gin.Context) {
 		return
 	}
 
-	shortUrlCode := generateShortUrlCode()
+	shortUrlCode := utils.GetRandomCode(5)
 	baseUrl := env.GetEnv().ApplicationBaseUrl
 	shortURL := baseUrl + "/r/" + shortUrlCode
 
