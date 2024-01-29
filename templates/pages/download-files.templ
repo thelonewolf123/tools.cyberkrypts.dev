@@ -26,13 +26,13 @@ templ DownloadFilesIndex(file_name, file_size, err string) {
 			} else {
 				<section class="mt-8">
 					<h2 class="text-2xl font-bold mb-4">File Info</h2>
-					<p class="text-gray-500">File Name: { file_name }</p>
+					<p class="text-gray-500" id="file_name">File Name: { file_name }</p>
 					<p class="text-gray-500">File Size: { file_size }</p>
 				</section>
 				<div class="flex justify-center mt-5">
-					<a href="/download/example.txt" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
-						Download File
-					</a>
+					<button disabled id="download-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded disabled:opacity-50  disabled:cursor-not-allowed">
+						Connecting...
+					</button>
 				</div>
 			}
 		</div>

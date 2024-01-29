@@ -1,8 +1,10 @@
 const fileInput = document.querySelector('input[type=file]')
 const fileName = document.querySelector('#file_name')
 const fileSize = document.querySelector('#file_size')
+let file = null
+
 fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0]
+    file = e.target.files[0]
     fileName.value = file.name
     fileSize.value = file.size
 })
@@ -60,6 +62,10 @@ function handleFileResultHtmx(e) {
         if (data.type === 'web_rtc_answer') {
             console.log('received answer')
             peer.signal(JSON.parse(data.web_rtc_answer))
+        } else if (data.type === 'start_download') {
+            console.log('download')
+            if (file === null) return
+            peer.send(file)
         }
     })
 
