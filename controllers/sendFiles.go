@@ -99,6 +99,10 @@ func (c SendFilesController) SendFilesWs(ctx *gin.Context) {
 		if sendFilesMessage.Type == "start_download" {
 			peerConnection[sendFilesMessage.FileId].Sender.WriteMessage(websocket.TextMessage, message)
 		}
+
+		if sendFilesMessage.Type == "end_download" {
+			peerConnection[sendFilesMessage.FileId].Receiver.WriteMessage(websocket.TextMessage, message)
+		}
 	}
 
 }
@@ -131,7 +135,7 @@ func (c SendFilesController) DownloadFile(ctx *gin.Context) {
 	fmt.Println(file_id)
 	database, err := db.GetDb()
 	if err != nil {
-		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", "Sever error! Please try again later"))
+		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", 0, "Sever error! Please try again later"))
 		return
 	}
 
@@ -141,7 +145,7 @@ func (c SendFilesController) DownloadFile(ctx *gin.Context) {
 	err = database.QueryRow(`SELECT file_name, file_size FROM send_files WHERE file_id = $1`, file_id).Scan(&file_name, &file_size)
 
 	if err != nil {
-		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", "File not found"))
+		utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex("", "", 0, "File not found"))
 		return
 	}
 
@@ -149,5 +153,5 @@ func (c SendFilesController) DownloadFile(ctx *gin.Context) {
 	file_size_int, _ := strconv.Atoi(file_size)
 	file_size = bytesize.New(float64(file_size_int)).String()
 
-	utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex(file_name, file_size, ""))
+	utils.RenderTemplate(200, ctx, pages.DownloadFilesIndex(file_name, file_size, file_size_int, ""))
 }

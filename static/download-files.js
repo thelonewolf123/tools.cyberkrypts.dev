@@ -1,5 +1,6 @@
 const ws = new WebSocket('ws://localhost:8080/send-files/ws')
 const downloadBtn = document.querySelector('#download-btn')
+const fileBuffer = []
 
 ws.addEventListener('open', () => {
     console.log('connected')
@@ -30,15 +31,28 @@ peer.on('connect', () => {
     downloadBtn.disabled = false
     downloadBtn.innerText = 'Download'
 })
-peer.on('data', (data) => {
-    console.log('recieved', data)
-    const blob = new Blob([data], { type: 'application/octet-stream' })
+
+function downloadFileHandler() {
+    const blob = new Blob([fileBuffer], { type: 'application/octet-stream' })
     const url = URL.createObjectURL(blob)
-    const fileName = document.querySelector('#file-name').value
+    const fileName = document.querySelector('#file-name').innerText
     const aTag = document.createElement('a')
     aTag.href = url
     aTag.download = fileName
     aTag.click()
+}
+
+const fileSizeBytes = parseInt(
+    document.querySelector('#file-size-bytes').innerText
+)
+
+peer.on('data', (data) => {
+    console.log('received', data)
+    fileBuffer.push(...data)
+    console.log(fileBuffer.length, fileSizeBytes)
+    if (fileSizeBytes === fileBuffer.length) {
+        downloadFileHandler()
+    }
 })
 
 ws.addEventListener('message', (e) => {

@@ -64,10 +64,31 @@ function handleFileResultHtmx(e) {
             peer.signal(JSON.parse(data.web_rtc_answer))
         } else if (data.type === 'start_download') {
             console.log('download')
-            if (file === null) return
-            peer.send(file)
+            file.arrayBuffer().then((buffer) => {
+                sendFileHandler(buffer)
+            })
         }
     })
+
+    function sendFileHandler(buffer) {
+        if (file === null) return
+        const dataChannel = peer._channel
+        const maxMessageSize = 256 * 1024 * 1024
+        for (let i = 0; i < buffer.byteLength; i += maxMessageSize) {
+            if (
+                dataChannel.bufferedAmount >
+                dataChannel.bufferedAmountLowThreshold
+            ) {
+                dataChannel.onbufferedamountlow = () => {
+                    dataChannel.onbufferedamountlow = null
+                    sendFileHandler(buffer)
+                }
+                return
+            }
+            peer.send(buffer.slice(i, i + maxMessageSize))
+            buffer = buffer.slice(i + maxMessageSize)
+        }
+    }
 
     ws.addEventListener('close', () => {
         console.log('disconnected')
