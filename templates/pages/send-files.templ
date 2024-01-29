@@ -4,7 +4,7 @@ import "tools.cyberkrypts.dev/templates/layout"
 import "tools.cyberkrypts.dev/templates/components"
 
 templ SendFilesIndex() {
-	@layout.Header("Send Files", components.SimplePeerCdn()) {
+	@layout.Header("Send Files", components.SimplePeerCdn(), components.IncludeScript("send-files.js")) {
 		<div class="container mx-auto p-4">
 			<section class="flex justify-center">
 				<div class="flex flex-col gap-2 items-center">
@@ -30,7 +30,8 @@ templ SendFilesIndex() {
 					<input type="hidden" name="file_size" id="file_size"/>
 					<button
 						type="submit"
-						class="ml-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+						id="send-files-btn"
+						class="ml-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Get Link
 					</button>
@@ -38,32 +39,5 @@ templ SendFilesIndex() {
 			</div>
 			<div class="send-files-result"></div>
 		</div>
-		<script>
-			const fileInput = document.querySelector("input[type=file]");
-			const fileName = document.querySelector("#file_name");
-			const fileSize = document.querySelector("#file_size");
-			fileInput.addEventListener("change", (e) => {
-				const file = e.target.files[0];
-				fileName.value = file.name;
-				fileSize.value = file.size;
-			});
-
-			const form = document.querySelector("form");
-			form.addEventListener("submit", ()=>{
-				const peer = new SimplePeer({
-					initiator: true,
-					trickle: false,
-				});
-				peer.on("signal", (data) => {
-					console.log(JSON.stringify(data));
-				});
-				peer.on("connect", () => {
-					console.log("connected");
-				});
-				peer.on("data", (data) => {
-					console.log("recieved", data);
-				});
-			})
-		</script>
 	}
 }

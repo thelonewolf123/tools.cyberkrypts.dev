@@ -13,6 +13,8 @@ func main() {
 
 	db.Init()
 
+	router.Static("/static", "./static")
+
 	router.GET("/", controllers.HomeController{}.Index)
 
 	router.GET("/youtube", controllers.YoutubeController{}.Index)

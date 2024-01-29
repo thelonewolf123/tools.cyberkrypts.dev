@@ -18,7 +18,7 @@ type Message struct {
 	ChatMessage string `json:"chat_message"`
 }
 
-var sessions = make(map[*websocket.Conn]bool)
+var talkSwipeClients = make(map[*websocket.Conn]bool)
 
 func (ts TalkSwipeController) Index(ctx *gin.Context) {
 	utils.RenderTemplate(200, ctx, pages.TalkSwipeIndex())
@@ -33,14 +33,14 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 		return
 	}
 
-	sessions[conn] = true
+	talkSwipeClients[conn] = true
 	defer conn.Close()
 	go sendActiveUsersCount()
 
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
-			delete(sessions, conn) // Remove the client if there's an error
+			delete(talkSwipeClients, conn) // Remove the client if there's an error
 			go sendActiveUsersCount()
 			return
 		}
@@ -49,7 +49,7 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 		err = json.Unmarshal(message, &jsonMsg)
 
 		if err != nil {
-			delete(sessions, conn) // Remove the client if there's an error
+			delete(talkSwipeClients, conn) // Remove the client if there's an error
 			return
 		}
 
@@ -59,7 +59,7 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 		components.ChatMessage(jsonMsg.ChatMessage, true).Render(context.Background(), outgoingMessage)
 		components.ChatMessage(jsonMsg.ChatMessage, false).Render(context.Background(), incomingMessage)
 
-		for client := range sessions {
+		for client := range talkSwipeClients {
 			var err error
 			if client != conn {
 				err = client.WriteMessage(websocket.TextMessage, outgoingMessage.Bytes())
@@ -68,7 +68,7 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 			}
 
 			if err != nil {
-				delete(sessions, conn) // Remove the client if there's an error
+				delete(talkSwipeClients, conn) // Remove the client if there's an error
 				go sendActiveUsersCount()
 				return
 			}
@@ -78,15 +78,15 @@ func (ts TalkSwipeController) NewChat(ctx *gin.Context) {
 
 func sendActiveUsersCount() {
 	activeUsersHtml := &bytes.Buffer{}
-	components.ActiveUsersCount(len(sessions)).Render(context.Background(), activeUsersHtml)
+	components.ActiveUsersCount(len(talkSwipeClients)).Render(context.Background(), activeUsersHtml)
 	broadcastMessage(activeUsersHtml.Bytes()) // broadcast to all users
 }
 
 func broadcastMessage(message []byte) {
-	for client := range sessions {
+	for client := range talkSwipeClients {
 		err := client.WriteMessage(websocket.TextMessage, message)
 		if err != nil {
-			delete(sessions, client) // Remove the client if there's an error
+			delete(talkSwipeClients, client) // Remove the client if there's an error
 			client.Close()
 		}
 	}

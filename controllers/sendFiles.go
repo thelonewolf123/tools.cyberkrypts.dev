@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -16,15 +17,23 @@ import (
 
 type SendFilesController struct{}
 
-type SendFilesMetaData struct {
-	FileName     string `json:"file_name"`
-	FileSize     string `json:"file_size"`
+type SendFilesMessage struct {
+	Type         string `json:"type"`
+	Client       string `json:"client"`
 	FileId       string `json:"file_id"`
 	WebRtcOffer  string `json:"web_rtc_offer"`
 	WebRtcAnswer string `json:"web_rtc_answer"`
 }
 
-var fsSessions map[*websocket.Conn]bool = make(map[*websocket.Conn]bool)
+type PeerConnection struct {
+	Sender       *websocket.Conn
+	Receiver     *websocket.Conn
+	WebRtcOffer  string
+	WebRtcAnswer string
+}
+
+var sendFilesClients map[*websocket.Conn]bool = make(map[*websocket.Conn]bool)
+var peerConnection map[string]*PeerConnection = make(map[string]*PeerConnection)
 
 func (c SendFilesController) Index(ctx *gin.Context) {
 	utils.RenderTemplate(200, ctx, pages.SendFilesIndex())
@@ -41,18 +50,55 @@ func (c SendFilesController) SendFilesWs(ctx *gin.Context) {
 
 	defer conn.Close()
 
-	fsSessions[conn] = true
+	sendFilesClients[conn] = true
 
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
-			return
+			delete(sendFilesClients, conn)
 		}
 
-		for client := range fsSessions {
-			if client != conn {
-				client.WriteMessage(websocket.TextMessage, message)
-			}
+		var sendFilesMessage SendFilesMessage
+		err = json.Unmarshal(message, &sendFilesMessage)
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+
+		}
+
+		if peerConnection[sendFilesMessage.FileId] == nil {
+			peerConnection[sendFilesMessage.FileId] = &PeerConnection{}
+		}
+
+		if sendFilesMessage.Client == "sender" {
+			peerConnection[sendFilesMessage.FileId].Sender = conn
+		}
+
+		if sendFilesMessage.Client == "receiver" {
+			peerConnection[sendFilesMessage.FileId].Receiver = conn
+		}
+
+		if sendFilesMessage.Type == "web_rtc_offer" {
+			peerConnection[sendFilesMessage.FileId].WebRtcOffer = sendFilesMessage.WebRtcOffer
+		}
+
+		if sendFilesMessage.Type == "web_rtc_answer" {
+			peerConnection[sendFilesMessage.FileId].WebRtcAnswer = sendFilesMessage.WebRtcAnswer
+			peerConnection[sendFilesMessage.FileId].Sender.WriteMessage(websocket.TextMessage, message)
+		}
+
+		if sendFilesMessage.Type == "get_web_rtc_offer" {
+			jsonMessage, _ := json.Marshal(&SendFilesMessage{
+				Type:        "web_rtc_offer",
+				WebRtcOffer: peerConnection[sendFilesMessage.FileId].WebRtcOffer,
+			})
+			conn.WriteMessage(websocket.TextMessage, jsonMessage)
+		}
+
+		if sendFilesMessage.Type == "start_download" {
+			jsonMessage, _ := json.Marshal(sendFilesMessage)
+			peerConnection[sendFilesMessage.FileId].Receiver.WriteMessage(websocket.TextMessage, jsonMessage)
 		}
 	}
 
