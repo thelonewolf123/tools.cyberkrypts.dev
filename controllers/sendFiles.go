@@ -98,7 +98,7 @@ func (c SendFilesController) SendFilesWs(ctx *gin.Context) {
 
 		if sendFilesMessage.Type == "start_download" {
 			jsonMessage, _ := json.Marshal(sendFilesMessage)
-			peerConnection[sendFilesMessage.FileId].Receiver.WriteMessage(websocket.TextMessage, jsonMessage)
+			peerConnection[sendFilesMessage.FileId].Sender.WriteMessage(websocket.TextMessage, jsonMessage)
 		}
 	}
 
