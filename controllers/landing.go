@@ -21,6 +21,12 @@ var landingPageInfo = []interfaces.LandingPageInfo{{
 		URL:         "/shortener",
 		Background:  "green",
 	},
+	{
+		Title:       "Json Formatter",
+		Description: "Format and validate JSON with ease",
+		URL:         "/json-formatter",
+		Background:  "yellow",
+	},
 	// {
 	// 	Title:       "Talk Swipe",
 	// 	Description: "Swipe right for interesting conversations",

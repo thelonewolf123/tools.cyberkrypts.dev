@@ -1,0 +1,51 @@
+package pages
+
+import "tools.cyberkrypts.dev/templates/layout"
+
+templ JsonFormatterIndex() {
+	@layout.Header("Json Formatter") {
+		<div class="bg-yellow-500 py-4 text-center text-white">
+			<h1 class="text-3xl font-bold">Json Formatter</h1>
+		</div>
+		<div class="mt-6 flex h-full w-full items-center justify-center">
+			<div class="flex w-full gap-4 rounded bg-white p-6 shadow-lg">
+				<textarea id="jsonInput" class="w-1/2 resize-none rounded border px-3 py-2 text-gray-700 focus:border-blue-300 focus:outline-none focus:ring" placeholder="Enter JSON here..."></textarea>
+				<div class="relative min-h-[50vh] w-1/2 overflow-auto rounded border bg-gray-50 p-2">
+					<button id="copy-btn" class="z-5000 absolute right-2 top-2 rounded bg-blue-500 px-2 py-1 text-white opacity-70 hover:bg-blue-400">copy</button>
+					<pre id="formattedJson" class="h-full w-full"></pre>
+				</div>
+			</div>
+			<script>
+                // Get the input and output elements
+                const input = document.getElementById("jsonInput")
+                const output = document.getElementById("formattedJson")
+
+                // Add an event listener to the input element
+                input.addEventListener("input", () => {
+                    // Try to parse the input value
+                    try {
+                        const value = JSON.parse(input.value)
+
+                        // If successful, stringify the value with indentation
+                        output.textContent = JSON.stringify(value, null, 2)
+                    } catch (error) {
+                        // If an error occurs, display the error message
+                        output.textContent = error.message
+                    }
+                })
+
+                const copyBtn = document.getElementById('copy-btn');
+                copyBtn.addEventListener('click', async () => {
+                    const copyText = document.getElementById("formattedJson").textContent;
+                    try {
+                        await navigator.clipboard.writeText(copyText);
+                        document.getElementById("copy-btn").innerHTML = "Copied!";
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                    }
+                });
+
+            </script>
+		</div>
+	}
+}

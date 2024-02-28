@@ -32,6 +32,8 @@ func main() {
 	router.POST("/send-files/meta-data", controllers.SendFilesController{}.MetaData)
 	router.GET("/f/:file_id", controllers.SendFilesController{}.DownloadFile)
 
+	router.GET("/json-formatter", controllers.JsonFormatterController{}.Index)
+
 	port := env.GetEnv().Port
 	router.Run(":" + port)
 }
