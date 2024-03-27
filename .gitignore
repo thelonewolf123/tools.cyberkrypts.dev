@@ -1,4 +1,5 @@
 .DS_Store
 templates/**/*_templ.go
+.env
 bin/
 tmp/
